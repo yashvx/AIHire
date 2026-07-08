@@ -1,10 +1,26 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+
+
 
 app = FastAPI(
     title="AIHire API",
     description="Backend API for AIHire Interview Platform",
     version="1.0.0"
 )
+
+class User(BaseModel):
+    name: str
+    email: str
+    age: int
+
+@app.post("/register")
+def register(user: User):
+    return {
+        "message": "User Registered Successfully!",
+        "user": user
+    }
+
 
 
 @app.get("/")
