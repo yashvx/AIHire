@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, EmailStr, model_validator
+
 
 
 
@@ -9,16 +10,29 @@ app = FastAPI(
     version="1.0.0"
 )
 
-class User(BaseModel):
-    name: str
-    email: str
-    age: int
+class UserRegister(BaseModel):
+    full_name: str = Field(min_length=3, max_length=50)
+    email: EmailStr
+    age: int = Field(gt=17, lt=60)
+    password: str = Field(min_length=8, max_length=32)
+    confirm_password: str
+
+    @model_validator(mode="after")
+    def passwords_match(self):
+        if self.password != self.confirm_password:
+            raise ValueError("Passwords do not match")
+        return self
+
 
 @app.post("/register")
-def register(user: User):
+def register(user: UserRegister):
     return {
-        "message": "User Registered Successfully!",
-        "user": user
+        "message": "Registration Successful!",
+        "user": {
+            "full_name": user.full_name,
+            "email": user.email,
+            "age": user.age
+        }
     }
 
 
