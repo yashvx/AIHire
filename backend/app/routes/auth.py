@@ -1,4 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.database.database import get_db
 from app.schemas.user import UserRegister
 from app.services.auth_service import register_user
 
@@ -6,5 +9,5 @@ router = APIRouter()
 
 
 @router.post("/register")
-def register(user: UserRegister):
-    return register_user(user)
+def register(user: UserRegister, db: Session = Depends(get_db)):
+    return register_user(user, db)

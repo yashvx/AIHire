@@ -6,8 +6,6 @@ class UserRegister(BaseModel):
 
     email: EmailStr
 
-    age: int = Field(gt=17, lt=60)
-
     password: str = Field(min_length=8, max_length=32)
 
     confirm_password: str

@@ -1,0 +1,1 @@
+DATABASE_URL = "postgresql://postgres:AIhire93521@localhost:5432/aihire"
