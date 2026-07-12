@@ -1,8 +1,11 @@
+from app.utils.jwt import create_access_token
 from app.utils.security import hash_password, verify_password
 from sqlalchemy.orm import Session
 
 from app.models.user import User
 from app.schemas.user import UserRegister, UserLogin
+
+
 
 
 def register_user(user: UserRegister, db: Session):
@@ -48,6 +51,13 @@ def login_user(user: UserLogin, db: Session):
             "message": "Invalid email or password"
         }
     
+    access_token = create_access_token(
+    data={
+        "user_id": existing_user.id,
+        "email": existing_user.email
+    }
+)
     return {
-        "message": "Login Successful"
+    "access_token": access_token,
+    "token_type": "bearer"
     }
