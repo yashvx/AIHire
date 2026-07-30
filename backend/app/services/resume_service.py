@@ -5,6 +5,7 @@ from fastapi import UploadFile, HTTPException
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.resume import Resume
+from app.parsers.resume_parser import extract_text_from_pdf
 
 UPLOAD_DIR = "storage/resumes"
 
@@ -43,16 +44,19 @@ def upload_resume(
     with open(file_path, "wb") as buffer:
         buffer.write(file.file.read())
 
+    resume_text = extract_text_from_pdf(file_path)
+
     # Save metadata
     resume = Resume(
-        user_id=current_user.id,
-        original_filename=file.filename,
-        stored_filename=unique_filename,
-        file_path=file_path,
-        file_size=os.path.getsize(file_path),
-        file_type=extension,
-        version=1,
-        is_active=True
+    user_id=current_user.id,
+    original_filename=file.filename,
+    stored_filename=unique_filename,
+    file_path=file_path,
+    file_size=os.path.getsize(file_path),
+    file_type=extension,
+    version=1,
+    is_active=True,
+    resume_text=resume_text
     )
 
     db.add(resume)

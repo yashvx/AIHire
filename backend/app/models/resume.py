@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Text
 from sqlalchemy.sql import func
 
 from app.database.database import Base
@@ -54,4 +54,9 @@ class Resume(Base):
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now()
+    )
+
+    resume_text = Column(
+        Text, 
+        nullable=True
     )
