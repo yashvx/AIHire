@@ -1,0 +1,57 @@
+# app/constants.py
+
+SKILLS_DATABASE = [
+    "Python",
+    "Java",
+    "C++",
+    "FastAPI",
+    "React",
+    "Docker",
+    "Git",
+    "GitHub",
+    "TensorFlow",
+    "PyTorch",
+    "Machine Learning",
+    "Deep Learning",
+    "NLP",
+    "Computer Vision",
+    "SQL",
+    "PostgreSQL",
+    "MongoDB",
+    "Linux",
+    "AWS",
+    "Azure",
+]
+
+EDUCATION_DATABASE = [
+    "B.Tech",
+    "M.Tech",
+    "B.E",
+    "M.E",
+    "BCA",
+    "MCA",
+    "B.Sc",
+    "M.Sc",
+    "Bachelor of Technology",
+    "Master of Technology",
+    "Bachelor of Engineering",
+    "Master of Engineering",
+    "Bachelor of Computer Applications",
+    "Master of Computer Applications",
+    "Bachelor of Science",
+    "Master of Science",
+    "PhD",
+    "Diploma",
+]
+
+SECTION_HEADERS = {
+    "education",
+    "skills",
+    "projects",
+    "experience",
+    "certifications",
+    "internships",
+    "achievements",
+    "languages",
+    "interests",
+}
