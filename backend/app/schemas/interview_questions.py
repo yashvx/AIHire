@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from app.schemas.interview_question import InterviewQuestion
+
 
 class InterviewQuestionRequest(BaseModel):
     resume_id: int
@@ -8,4 +10,7 @@ class InterviewQuestionRequest(BaseModel):
 
 
 class InterviewQuestionResponse(BaseModel):
-    questions: list[str]
+    company: str
+    interview_type: str
+    total_questions: int
+    questions: list[InterviewQuestion]

@@ -56,40 +56,92 @@ def generate_questions(
     resume_context = build_resume_context(resume_text)
 
     if not resume_context["has_resume_data"]:
-        return [
-            f"Tell me about your experience relevant to {company}.",
-            "Explain one important project from your background.",
-            f"What technical skills are relevant to a {interview_type} interview?"
+        questions = [
+            {
+                "question": f"Tell me about your experience relevant to {company}.",
+                "category": "general",
+                "difficulty": "easy",
+                "source": "general"
+            },
+            {
+                "question": "Explain one important project from your background.",
+                "category": "project",
+                "difficulty": "easy",
+                "source": "general"
+            },
+            {
+                "question": (
+                    f"What technical skills are relevant to a "
+                    f"{interview_type} interview?"
+                ),
+                "category": "technical",
+                "difficulty": "medium",
+                "source": "general"
+            }
         ]
+
+        for index, question in enumerate(questions, start=1):
+            question["id"] = index
+
+        return questions
 
     technologies = extract_technologies(resume_text)
     projects = extract_projects(resume_text)
 
     questions = [
-        f"Based on your resume, tell me about your experience relevant to {company}."
+        {
+            "question": (
+                f"Based on your resume, tell me about your experience "
+                f"relevant to {company}."
+            ),
+            "category": "general",
+            "difficulty": "easy",
+            "source": "resume"
+        }
     ]
 
     if technologies:
         technology = technologies[0]
 
         questions.append(
-            f"You mention {technology} on your resume. "
-            f"Explain how you have used {technology} in a project."
+            {
+                "question": (
+                    f"You mention {technology} on your resume. "
+                    f"Explain how you have used {technology} in a project."
+                ),
+                "category": "technical",
+                "difficulty": "medium",
+                "source": "resume"
+            }
         )
 
     if len(technologies) >= 2:
         questions.append(
-            f"Your resume mentions {technologies[0]} and "
-            f"{technologies[1]}. Explain how these technologies "
-            f"work together in one of your projects."
+            {
+                "question": (
+                    f"Your resume mentions {technologies[0]} and "
+                    f"{technologies[1]}. Explain how these technologies "
+                    f"work together in one of your projects."
+                ),
+                "category": "technical",
+                "difficulty": "medium",
+                "source": "resume"
+            }
         )
 
     if projects:
         project = projects[0]
 
         questions.append(
-            f"Tell me about the project or experience described as: "
-            f"{project}"
+            {
+                "question": (
+                    f"Tell me about the project or experience described as: "
+                    f"{project}"
+                ),
+                "category": "project",
+                "difficulty": "medium",
+                "source": "resume"
+            }
         )
 
     if interview_type.lower() == "hr":
@@ -100,11 +152,24 @@ def generate_questions(
         display_interview_type = interview_type
 
     questions.append(
-        f"What technical challenge from your experience would you "
-        f"expect to discuss in {article} {display_interview_type} interview?"
+        {
+            "question": (
+                f"What technical challenge from your experience would you "
+                f"expect to discuss in {article} "
+                f"{display_interview_type} interview?"
+            ),
+            "category": interview_type.lower(),
+            "difficulty": "hard",
+            "source": "resume"
+        }
     )
 
-    return questions[:5]
+    questions = questions[:5]
+
+    for index, question in enumerate(questions, start=1):
+        question["id"] = index
+
+    return questions
 
 
 def generate_interview_questions(
@@ -134,5 +199,8 @@ def generate_interview_questions(
     )
 
     return {
+        "company": request.company,
+        "interview_type": request.interview_type,
+        "total_questions": len(questions),
         "questions": questions
     }
