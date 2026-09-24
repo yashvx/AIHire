@@ -5,10 +5,12 @@ from app.database.database import Base, engine
 
 from app.models.user import User
 from app.models.resume import Resume
+from app.models.interview import Interview
 
 from app.routes.resume import router as resume_router
 from app.routes.auth import router as auth_router
 from app.routes.resume_analysis import router as resume_analysis_router
+from app.routes.interview import router as interview_router
 
 
 app = FastAPI(
@@ -20,3 +22,4 @@ app.include_router(auth_router)
 
 app.include_router(resume_router)
 app.include_router(resume_analysis_router)
+app.include_router(interview_router)
