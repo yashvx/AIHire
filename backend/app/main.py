@@ -11,7 +11,7 @@ from app.routes.resume import router as resume_router
 from app.routes.auth import router as auth_router
 from app.routes.resume_analysis import router as resume_analysis_router
 from app.routes.interview import router as interview_router
-
+from app.routes.interview_questions import router as interview_questions_router
 
 app = FastAPI(
     title="AIHire API",
@@ -23,3 +23,4 @@ app.include_router(auth_router)
 app.include_router(resume_router)
 app.include_router(resume_analysis_router)
 app.include_router(interview_router)
+app.include_router(interview_questions_router)
