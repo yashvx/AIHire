@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.resume import Resume
 from app.parsers.resume_parser import extract_text_from_pdf
+from app.analyzers.resume_analyzer import analyze_resume
 
 UPLOAD_DIR = "storage/resumes"
 
@@ -45,6 +46,7 @@ def upload_resume(
         buffer.write(file.file.read())
 
     resume_text = extract_text_from_pdf(file_path)
+    parsed_data = analyze_resume(resume_text)
 
     # Save metadata
     resume = Resume(
@@ -56,7 +58,8 @@ def upload_resume(
     file_type=extension,
     version=1,
     is_active=True,
-    resume_text=resume_text
+    resume_text=resume_text,
+    parsed_data=parsed_data
     )
 
     db.add(resume)

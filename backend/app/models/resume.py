@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Text, JSON
 from sqlalchemy.sql import func
 
 from app.database.database import Base
@@ -57,6 +57,11 @@ class Resume(Base):
     )
 
     resume_text = Column(
-        Text, 
+        Text,
+        nullable=True
+    )
+
+    parsed_data = Column(
+        JSON,
         nullable=True
     )
