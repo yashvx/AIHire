@@ -52,6 +52,7 @@ def extract_projects(resume_text: str):
 def generate_questions(
     resume_text: str,
     company: str,
+    role: str,
     interview_type: str
 ):
     resume_context = build_resume_context(resume_text)
@@ -59,7 +60,10 @@ def generate_questions(
     if not resume_context["has_resume_data"]:
         questions = [
             {
-                "question": f"Tell me about your experience relevant to {company}.",
+                "question": (
+                    f"Tell me about your experience relevant to a "
+                    f"{role} position at {company}."
+                ),
                 "category": "general",
                 "difficulty": "easy",
                 "source": "general"
@@ -72,8 +76,8 @@ def generate_questions(
             },
             {
                 "question": (
-                    f"What technical skills are relevant to a "
-                    f"{interview_type} interview?"
+                    f"What technical skills are important for a "
+                    f"{role} in a {interview_type} interview?"
                 ),
                 "category": "technical",
                 "difficulty": "medium",
@@ -93,7 +97,7 @@ def generate_questions(
         {
             "question": (
                 f"Based on your resume, tell me about your experience "
-                f"relevant to {company}."
+                f"that is relevant to a {role} position at {company}."
             ),
             "category": "general",
             "difficulty": "easy",
@@ -108,7 +112,8 @@ def generate_questions(
             {
                 "question": (
                     f"You mention {technology} on your resume. "
-                    f"Explain how you have used {technology} in a project."
+                    f"Explain how you have used {technology} in a project "
+                    f"and how that experience applies to a {role} role."
                 ),
                 "category": "technical",
                 "difficulty": "medium",
@@ -157,7 +162,7 @@ def generate_questions(
             "question": (
                 f"What technical challenge from your experience would you "
                 f"expect to discuss in {article} "
-                f"{display_interview_type} interview?"
+                f"{display_interview_type} interview for a {role} position at {company}?"
             ),
             "category": interview_type.lower(),
             "difficulty": "hard",
@@ -196,6 +201,7 @@ def generate_interview_questions(
     questions = generate_questions(
         resume_text=resume.resume_text or "",
         company=request.company,
+        role=request.role,
         interview_type=request.interview_type
     )
 
@@ -214,6 +220,7 @@ def generate_interview_questions(
 
     return {
         "company": request.company,
+        "role": request.role,
         "interview_type": request.interview_type,
         "total_questions": len(saved_questions),
         "questions": [

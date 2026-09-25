@@ -30,6 +30,7 @@ def create_interview(
         user_id=current_user_id,
         resume_id=interview_data.resume_id,
         company=interview_data.company,
+        role=interview_data.role,
         interview_type=interview_data.interview_type,
         status="created"
     )

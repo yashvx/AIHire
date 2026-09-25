@@ -31,7 +31,7 @@ def get_interview_report(
         .filter(
             InterviewQuestion.interview_id == interview_id
         )
-        .order_by(InterviewQuestion.question_order)
+        .order_by(InterviewQuestion.id)
         .all()
     )
 
@@ -42,7 +42,7 @@ def get_interview_report(
         )
         .first()
     )
-
+    
     total_questions = len(questions)
 
     answered_questions = sum(
@@ -66,6 +66,7 @@ def get_interview_report(
     return {
         "interview_id": interview.id,
         "company": interview.company,
+        "role": interview.role,
         "interview_type": interview.interview_type,
         "status": interview.status,
 
@@ -116,11 +117,11 @@ def get_interview_report(
             else None
         ),
 
-	"recommendations": (
-    	    evaluation.recommendations
-    	    if evaluation
-    	    else None
-	),
+        "recommendations": (
+            evaluation.recommendations
+            if evaluation
+            else None
+        ),
 
         "created_at": interview.created_at,
 

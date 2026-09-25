@@ -3,6 +3,8 @@ from app.models.interview_question import InterviewQuestion
 
 def generate_interview_report_content(
     questions: list[InterviewQuestion],
+    company: str,
+    role: str,
     overall_score: int,
     technical_score: int,
     communication_score: int,

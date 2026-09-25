@@ -135,11 +135,13 @@ def create_interview_evaluation(
 
     report_content = generate_interview_report_content(
         questions=evaluated_questions,
+        company=interview.company,
+        role=interview.role or "the target role",
         overall_score=overall_score,
         technical_score=technical_score,
         communication_score=communication_score,
         relevance_score=relevance_score
-)
+    )
 
     evaluation = InterviewEvaluation(
         interview_id=interview_id,

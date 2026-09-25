@@ -26,6 +26,11 @@ class Interview(Base):
         nullable=False
     )
 
+    role = Column(
+        String(100), 
+        nullable=True
+    )
+
     interview_type = Column(
         String(50),
         nullable=False

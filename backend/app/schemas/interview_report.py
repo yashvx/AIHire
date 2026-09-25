@@ -21,6 +21,7 @@ class InterviewReportQuestion(BaseModel):
 class InterviewReportResponse(BaseModel):
     interview_id: int
     company: str
+    role: str | None = None
     interview_type: str
     status: str
 
