@@ -27,6 +27,7 @@ def save_interview_questions(
         .filter(
             InterviewQuestion.interview_id == interview_id
         )
+        .order_by(InterviewQuestion.question_order)
         .all()
     )
 
@@ -35,9 +36,10 @@ def save_interview_questions(
 
     saved_questions = []
 
-    for question_data in questions:
+    for index, question_data in enumerate(questions, start=1):
         question = InterviewQuestion(
             interview_id=interview_id,
+            question_order=index,
             question=question_data["question"],
             category=question_data["category"],
             difficulty=question_data["difficulty"],

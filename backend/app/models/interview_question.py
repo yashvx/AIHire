@@ -18,6 +18,11 @@ class InterviewQuestion(Base):
         nullable=False
     )
 
+    question_order = Column(
+        Integer,
+        nullable=False
+    )
+
     question = Column(
         Text,
         nullable=False
