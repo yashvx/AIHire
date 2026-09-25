@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 from app.schemas.interview_question import InterviewQuestion
 
 

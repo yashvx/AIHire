@@ -4,6 +4,8 @@ from app.services.interview_answer_service import submit_interview_answer
 from app.services.interview_question_list_service import get_interview_questions
 from app.schemas.interview_evaluation import InterviewEvaluationRequest
 from app.services.interview_evaluation_service import save_interview_evaluation
+from app.schemas.interview_evaluation import InterviewEvaluationResponse
+from app.services.interview_evaluation_service import create_interview_evaluation
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -99,6 +101,22 @@ def ai_evaluate_answer(
 ):
     return evaluate_interview_answer(
         question_id=question_id,
+        current_user_id=current_user.id,
+        db=db
+    )
+
+
+@router.post(
+    "/{interview_id}/evaluation",
+    response_model=InterviewEvaluationResponse
+)
+def evaluate_interview(
+    interview_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return create_interview_evaluation(
+        interview_id=interview_id,
         current_user_id=current_user.id,
         db=db
     )
