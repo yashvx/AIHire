@@ -6,6 +6,7 @@ from app.database.database import Base, engine
 from app.models.user import User
 from app.models.resume import Resume
 from app.models.interview import Interview
+from app.models.interview_question import InterviewQuestion
 
 from app.routes.resume import router as resume_router
 from app.routes.auth import router as auth_router

@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.resume import Resume
 from app.schemas.interview_questions import InterviewQuestionRequest
 from app.services.ai.resume_context import build_resume_context
+from app.services.interview_question_service import save_interview_questions
 
 
 TECHNOLOGIES = [
@@ -198,9 +199,31 @@ def generate_interview_questions(
         interview_type=request.interview_type
     )
 
+    saved_questions = save_interview_questions(
+        interview_id=request.interview_id,
+        current_user_id=current_user_id,
+        questions=questions,
+        db=db
+    )
+
+    if saved_questions is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Interview not found"
+        )
+
     return {
         "company": request.company,
         "interview_type": request.interview_type,
-        "total_questions": len(questions),
-        "questions": questions
+        "total_questions": len(saved_questions),
+        "questions": [
+            {
+                "id": question.id,
+                "question": question.question,
+                "category": question.category,
+                "difficulty": question.difficulty,
+                "source": question.source
+            }
+            for question in saved_questions
+        ]
     }

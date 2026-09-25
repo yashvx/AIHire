@@ -1,3 +1,4 @@
+from app.services.interview_question_list_service import get_interview_questions
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -27,6 +28,20 @@ def generate_questions_endpoint(
 ):
     return generate_interview_questions(
         request=request,
+        current_user_id=current_user.id,
+        db=db
+    )
+
+@router.get(
+    "/{interview_id}/questions"
+)
+def get_questions(
+    interview_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return get_interview_questions(
+        interview_id=interview_id,
         current_user_id=current_user.id,
         db=db
     )
