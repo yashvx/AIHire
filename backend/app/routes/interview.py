@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from app.services.interview_completion_service import complete_interview
+from app.services.interview_start_service import start_interview
 
 from app.database.database import get_db
 from app.dependencies.auth import get_current_user
@@ -37,3 +39,36 @@ def list_interviews(
     db: Session = Depends(get_db)
 ):
     return get_user_interviews(current_user.id, db)
+
+
+
+@router.post(
+    "/{interview_id}/complete",
+    response_model=InterviewResponse
+)
+def complete_interview_endpoint(
+    interview_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return complete_interview(
+        interview_id=interview_id,
+        current_user_id=current_user.id,
+        db=db
+    )
+
+
+@router.post(
+    "/{interview_id}/start",
+    response_model=InterviewResponse
+)
+def start_interview_endpoint(
+    interview_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return start_interview(
+        interview_id=interview_id,
+        current_user_id=current_user.id,
+        db=db
+    )
