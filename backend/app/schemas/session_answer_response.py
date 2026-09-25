@@ -6,4 +6,4 @@ class SessionAnswerResponse(BaseModel):
     question_order: int
     answer: str
     next_question_order: int | None = None
-
+    interview_status: str

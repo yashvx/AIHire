@@ -44,9 +44,6 @@ def submit_session_answer(
 
     question.answer = answer
 
-    db.commit()
-    db.refresh(question)
-
     next_question = (
         db.query(InterviewQuestion)
         .filter(
@@ -56,13 +53,20 @@ def submit_session_answer(
         .first()
     )
 
+    if not next_question:
+        interview.status = "completed"
+
+    db.commit()
+    db.refresh(question)
+
     return {
-        "question_id": question.id,
-        "question_order": question.question_order,
-        "answer": question.answer,
-        "next_question_order": (
-            next_question.question_order
-            if next_question
-            else None
-        )
-    }
+    "question_id": question.id,
+    "question_order": question.question_order,
+    "answer": question.answer,
+    "next_question_order": (
+        next_question.question_order
+        if next_question
+        else None
+    ),
+    "interview_status": interview.status
+}
