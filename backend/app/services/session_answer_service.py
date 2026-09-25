@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.models.interview import Interview
 from app.models.interview_question import InterviewQuestion
+from app.services.ai.answer_evaluator import evaluate_answer
 
 
 def submit_session_answer(
@@ -56,6 +57,17 @@ def submit_session_answer(
 
     question.answer = answer
 
+    evaluation = evaluate_answer(
+        question.question,
+        answer
+    )
+
+    question.technical_score = evaluation["technical_score"]
+    question.communication_score = evaluation["communication_score"]
+    question.relevance_score = evaluation["relevance_score"]
+    question.overall_score = evaluation["overall_score"]
+    question.feedback = evaluation["feedback"]
+
     next_question = (
         db.query(InterviewQuestion)
         .filter(
@@ -75,10 +87,16 @@ def submit_session_answer(
     "question_id": question.id,
     "question_order": question.question_order,
     "answer": question.answer,
+    "technical_score": question.technical_score,
+    "communication_score": question.communication_score,
+    "relevance_score": question.relevance_score,
+    "overall_score": question.overall_score,
+    "feedback": question.feedback,
     "next_question_order": (
         next_question.question_order
         if next_question
         else None
     ),
     "interview_status": interview.status
+
 }
