@@ -24,6 +24,11 @@ class InterviewReportResponse(BaseModel):
     interview_type: str
     status: str
 
+    total_questions: int
+    answered_questions: int
+    evaluated_questions: int
+    completion_percentage: int
+
     overall_score: int | None = None
     technical_score: int | None = None
     communication_score: int | None = None

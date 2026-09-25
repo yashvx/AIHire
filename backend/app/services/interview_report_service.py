@@ -31,7 +31,7 @@ def get_interview_report(
         .filter(
             InterviewQuestion.interview_id == interview_id
         )
-        .order_by(InterviewQuestion.id)
+        .order_by(InterviewQuestion.question_order)
         .all()
     )
 
@@ -43,11 +43,36 @@ def get_interview_report(
         .first()
     )
 
+    total_questions = len(questions)
+
+    answered_questions = sum(
+        1
+        for question in questions
+        if question.answer
+    )
+
+    evaluated_questions = sum(
+        1
+        for question in questions
+        if question.overall_score is not None
+    )
+
+    completion_percentage = (
+        round((answered_questions / total_questions) * 100)
+        if total_questions > 0
+        else 0
+    )
+
     return {
         "interview_id": interview.id,
         "company": interview.company,
         "interview_type": interview.interview_type,
         "status": interview.status,
+
+        "total_questions": total_questions,
+        "answered_questions": answered_questions,
+        "evaluated_questions": evaluated_questions,
+        "completion_percentage": completion_percentage,
 
         "overall_score": (
             evaluation.overall_score
