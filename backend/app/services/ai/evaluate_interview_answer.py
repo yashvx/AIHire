@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.interview_question import InterviewQuestion
 from app.models.interview import Interview
 from app.services.ai.answer_evaluator import evaluate_answer
+from app.services.ai.adaptive_interview import analyze_answer_for_adaptation
 
 
 def evaluate_interview_answer(
@@ -47,7 +48,17 @@ def evaluate_interview_answer(
     question.overall_score = evaluation["overall_score"]
     question.feedback = evaluation["feedback"]
 
+    adaptation = analyze_answer_for_adaptation(
+        technical_score=evaluation["technical_score"],
+        communication_score=evaluation["communication_score"],
+        relevance_score=evaluation["relevance_score"],
+        overall_score=evaluation["overall_score"]
+    )
+
     db.commit()
     db.refresh(question)
 
-    return question
+    return {
+        "question": question,
+        "adaptation": adaptation
+    }

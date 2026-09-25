@@ -18,6 +18,7 @@ from app.schemas.interview_questions import (
     InterviewQuestionResponse
 )
 from app.services.ai.question_generator import generate_interview_questions
+from app.services.adaptive_interview_service import create_adaptive_next_question
 
 
 router = APIRouter(
@@ -103,6 +104,23 @@ def ai_evaluate_answer(
 ):
     return evaluate_interview_answer(
         question_id=question_id,
+        current_user_id=current_user.id,
+        db=db
+    )
+
+
+@router.post(
+    "/{interview_id}/adaptive-next-question"
+)
+def adaptive_next_question(
+    interview_id: int,
+    current_question_order: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return create_adaptive_next_question(
+        interview_id=interview_id,
+        current_question_order=current_question_order,
         current_user_id=current_user.id,
         db=db
     )

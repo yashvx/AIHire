@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, Text, Boolean
 
 from app.database.database import Base
 
@@ -41,6 +41,12 @@ class InterviewQuestion(Base):
     source = Column(
         String(50),
         nullable=False
+    )
+
+    is_adaptive = Column(
+        Boolean,
+        nullable=False,
+        default=False
     )
 
     answer = Column(

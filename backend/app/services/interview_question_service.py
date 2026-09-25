@@ -43,7 +43,8 @@ def save_interview_questions(
             question=question_data["question"],
             category=question_data["category"],
             difficulty=question_data["difficulty"],
-            source=question_data["source"]
+            source=question_data["source"],
+            is_adaptive=question_data.get("is_adaptive", False)
         )
 
         db.add(question)

@@ -52,18 +52,21 @@ def generate_interview_report_content(
 
     if overall_score >= 80:
         summary = (
-            "The interview demonstrates strong overall performance with "
-            "consistent technical, communication, and relevance scores."
+            f"The interview demonstrates strong overall performance for the "
+            f"{role} role at {company}, with consistent technical, communication, "
+            f"and relevance scores."
         )
     elif overall_score >= 60:
         summary = (
-            "The interview demonstrates a developing skill set with several "
-            "strong areas and opportunities for improvement."
-        )
+            f"The interview demonstrates a developing skill set for the "
+            f"{role} role at {company}, with several strong areas and "
+            f"opportunities for improvement."
+     )
     else:
         summary = (
-            "The interview shows a foundation of relevant skills, but several "
-            "areas require improvement before interview performance becomes consistent."
+            f"The interview shows a foundation of relevant skills for the "
+            f"{role} role at {company}, but several areas require improvement "
+            f"before interview performance becomes consistent."
         )
 
     if not strengths:

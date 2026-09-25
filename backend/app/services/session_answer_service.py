@@ -4,6 +4,10 @@ from sqlalchemy.orm import Session
 from app.models.interview import Interview
 from app.models.interview_question import InterviewQuestion
 from app.services.ai.answer_evaluator import evaluate_answer
+from app.services.adaptive_interview_service import create_adaptive_next_question
+
+
+MAX_INTERVIEW_QUESTIONS = 8
 
 
 def submit_session_answer(
@@ -30,15 +34,15 @@ def submit_session_answer(
 
     if interview.status == "completed":
         raise HTTPException(
-        status_code=400,
-        detail="Interview is already completed"
-    )
+            status_code=400,
+            detail="Interview is already completed"
+        )
 
     if interview.status != "in_progress":
         raise HTTPException(
-        status_code=400,
-        detail="Interview has not been started"
-    )
+            status_code=400,
+            detail="Interview has not been started"
+        )
 
     question = (
         db.query(InterviewQuestion)
@@ -68,6 +72,39 @@ def submit_session_answer(
     question.overall_score = evaluation["overall_score"]
     question.feedback = evaluation["feedback"]
 
+    db.commit()
+    db.refresh(question)
+
+    if question_order >= MAX_INTERVIEW_QUESTIONS:
+        interview.status = "completed"
+        db.commit()
+        db.refresh(interview)
+
+        return {
+            "question_id": question.id,
+            "question_order": question.question_order,
+            "answer": question.answer,
+            "technical_score": question.technical_score,
+            "communication_score": question.communication_score,
+            "relevance_score": question.relevance_score,
+            "overall_score": question.overall_score,
+            "feedback": question.feedback,
+            "adaptation": {
+                "focus_areas": [],
+                "next_difficulty": "none"
+            },
+            "next_question": None,
+            "next_question_order": None,
+            "interview_status": interview.status
+        }
+
+    adaptive_result = create_adaptive_next_question(
+        interview_id=interview_id,
+        current_question_order=question_order,
+        current_user_id=current_user_id,
+        db=db
+    )
+
     next_question = (
         db.query(InterviewQuestion)
         .filter(
@@ -77,26 +114,21 @@ def submit_session_answer(
         .first()
     )
 
-    if not next_question:
-        interview.status = "completed"
-
-    db.commit()
-    db.refresh(question)
-
     return {
-    "question_id": question.id,
-    "question_order": question.question_order,
-    "answer": question.answer,
-    "technical_score": question.technical_score,
-    "communication_score": question.communication_score,
-    "relevance_score": question.relevance_score,
-    "overall_score": question.overall_score,
-    "feedback": question.feedback,
-    "next_question_order": (
-        next_question.question_order
-        if next_question
-        else None
-    ),
-    "interview_status": interview.status
-
-}
+        "question_id": question.id,
+        "question_order": question.question_order,
+        "answer": question.answer,
+        "technical_score": question.technical_score,
+        "communication_score": question.communication_score,
+        "relevance_score": question.relevance_score,
+        "overall_score": question.overall_score,
+        "feedback": question.feedback,
+        "adaptation": adaptive_result["adaptation"],
+        "next_question": adaptive_result["question"],
+        "next_question_order": (
+            next_question.question_order
+            if next_question
+            else None
+        ),
+        "interview_status": interview.status
+    }
