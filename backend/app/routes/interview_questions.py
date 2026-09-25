@@ -1,3 +1,4 @@
+from app.services.ai.evaluate_interview_answer import evaluate_interview_answer
 from app.schemas.interview_answer import InterviewAnswerRequest
 from app.services.interview_answer_service import submit_interview_answer
 from app.services.interview_question_list_service import get_interview_questions
@@ -84,5 +85,20 @@ def evaluate_answer(
         relevance_score=evaluation_data.relevance_score,
         overall_score=evaluation_data.overall_score,
         feedback=evaluation_data.feedback,
+        db=db
+    )
+
+
+@router.post(
+    "/questions/{question_id}/ai-evaluate"
+)
+def ai_evaluate_answer(
+    question_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return evaluate_interview_answer(
+        question_id=question_id,
+        current_user_id=current_user.id,
         db=db
     )
