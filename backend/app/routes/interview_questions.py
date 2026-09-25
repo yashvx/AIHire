@@ -1,3 +1,5 @@
+from app.schemas.interview_answer import InterviewAnswerRequest
+from app.services.interview_answer_service import submit_interview_answer
 from app.services.interview_question_list_service import get_interview_questions
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -43,5 +45,21 @@ def get_questions(
     return get_interview_questions(
         interview_id=interview_id,
         current_user_id=current_user.id,
+        db=db
+    )
+
+@router.post(
+    "/questions/{question_id}/answer"
+)
+def submit_answer(
+    question_id: int,
+    answer_data: InterviewAnswerRequest,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return submit_interview_answer(
+        question_id=question_id,
+        current_user_id=current_user.id,
+        answer=answer_data.answer,
         db=db
     )

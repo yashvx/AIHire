@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 
 from app.database.database import Base
 
@@ -19,7 +19,7 @@ class InterviewQuestion(Base):
     )
 
     question = Column(
-        String,
+        Text,
         nullable=False
     )
 
@@ -36,4 +36,9 @@ class InterviewQuestion(Base):
     source = Column(
         String(50),
         nullable=False
+    )
+
+    answer = Column(
+        Text,
+        nullable=True
     )
