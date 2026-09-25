@@ -27,6 +27,18 @@ def submit_session_answer(
             detail="Interview not found"
         )
 
+    if interview.status == "completed":
+        raise HTTPException(
+        status_code=400,
+        detail="Interview is already completed"
+    )
+
+    if interview.status != "in_progress":
+        raise HTTPException(
+        status_code=400,
+        detail="Interview has not been started"
+    )
+
     question = (
         db.query(InterviewQuestion)
         .filter(
