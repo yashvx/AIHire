@@ -1,3 +1,5 @@
+from app.schemas.interview_report import InterviewReportResponse
+from app.services.interview_report_service import get_interview_report
 from app.services.ai.evaluate_interview_answer import evaluate_interview_answer
 from app.schemas.interview_answer import InterviewAnswerRequest
 from app.services.interview_answer_service import submit_interview_answer
@@ -116,6 +118,22 @@ def evaluate_interview(
     db: Session = Depends(get_db)
 ):
     return create_interview_evaluation(
+        interview_id=interview_id,
+        current_user_id=current_user.id,
+        db=db
+    )
+
+
+@router.get(
+    "/{interview_id}/report",
+    response_model=InterviewReportResponse
+)
+def interview_report(
+    interview_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return get_interview_report(
         interview_id=interview_id,
         current_user_id=current_user.id,
         db=db
