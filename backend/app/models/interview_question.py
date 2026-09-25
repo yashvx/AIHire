@@ -42,3 +42,28 @@ class InterviewQuestion(Base):
         Text,
         nullable=True
     )
+
+    technical_score = Column(
+        Integer,
+        nullable=True
+    )
+
+    communication_score = Column(
+        Integer,
+        nullable=True
+    )
+
+    relevance_score = Column(
+        Integer,
+        nullable=True
+    )
+
+    overall_score = Column(
+        Integer,
+        nullable=True
+    )
+
+    feedback = Column(
+        Text,
+        nullable=True
+    )

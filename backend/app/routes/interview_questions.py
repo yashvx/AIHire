@@ -1,6 +1,8 @@
 from app.schemas.interview_answer import InterviewAnswerRequest
 from app.services.interview_answer_service import submit_interview_answer
 from app.services.interview_question_list_service import get_interview_questions
+from app.schemas.interview_evaluation import InterviewEvaluationRequest
+from app.services.interview_evaluation_service import save_interview_evaluation
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -61,5 +63,26 @@ def submit_answer(
         question_id=question_id,
         current_user_id=current_user.id,
         answer=answer_data.answer,
+        db=db
+    )
+
+
+@router.post(
+    "/questions/{question_id}/evaluate"
+)
+def evaluate_answer(
+    question_id: int,
+    evaluation_data: InterviewEvaluationRequest,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return save_interview_evaluation(
+        question_id=question_id,
+        current_user_id=current_user.id,
+        technical_score=evaluation_data.technical_score,
+        communication_score=evaluation_data.communication_score,
+        relevance_score=evaluation_data.relevance_score,
+        overall_score=evaluation_data.overall_score,
+        feedback=evaluation_data.feedback,
         db=db
     )
