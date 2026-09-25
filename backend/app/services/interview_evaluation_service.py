@@ -92,6 +92,12 @@ def create_interview_evaluation(
         if question.overall_score is not None
     ]
 
+    if len(evaluated_questions) != len(questions):
+        raise HTTPException(
+            status_code=400,
+            detail="Not all interview questions have been evaluated"
+        )
+
     if not evaluated_questions:
         raise HTTPException(
             status_code=400,
