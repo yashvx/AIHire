@@ -1,3 +1,4 @@
+from app.services.ai.interview_report_generator import generate_interview_report_content
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -132,24 +133,24 @@ def create_interview_evaluation(
         ) / len(evaluated_questions)
     )
 
+    report_content = generate_interview_report_content(
+        questions=evaluated_questions,
+        overall_score=overall_score,
+        technical_score=technical_score,
+        communication_score=communication_score,
+        relevance_score=relevance_score
+)
+
     evaluation = InterviewEvaluation(
         interview_id=interview_id,
         overall_score=overall_score,
         technical_score=technical_score,
         communication_score=communication_score,
         relevance_score=relevance_score,
-        summary=(
-            f"Interview evaluated across "
-            f"{len(evaluated_questions)} question(s)."
-        ),
-        strengths=(
-            "Evaluation data is available for "
-            "technical, communication, and relevance performance."
-        ),
-        areas_to_improve=(
-            "Continue improving areas with lower "
-            "question-level scores."
-        )
+        summary=report_content["summary"],
+        strengths=report_content["strengths"],
+        areas_to_improve=report_content["areas_to_improve"],
+        recommendations=report_content["recommendations"]
     )
 
     db.add(evaluation)

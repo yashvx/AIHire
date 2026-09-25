@@ -56,6 +56,11 @@ class InterviewEvaluation(Base):
         nullable=True
     )
 
+    recommendations = Column(
+        Text, 
+        nullable=True
+    )
+
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now()

@@ -116,6 +116,12 @@ def get_interview_report(
             else None
         ),
 
+	"recommendations": (
+    	    evaluation.recommendations
+    	    if evaluation
+    	    else None
+	),
+
         "created_at": interview.created_at,
 
         "questions": [

@@ -21,4 +21,5 @@ class InterviewEvaluationResponse(BaseModel):
     summary: str | None = None
     strengths: str | None = None
     areas_to_improve: str | None = None
+    recommendations: str | None = None
     created_at: datetime
