@@ -13,6 +13,7 @@ from app.routes.auth import router as auth_router
 from app.routes.resume_analysis import router as resume_analysis_router
 from app.routes.interview import router as interview_router
 from app.routes.interview_questions import router as interview_questions_router
+from app.routes.recommendations import router as recommendations_router
 from app.models.interview_evaluation import InterviewEvaluation
 
 app = FastAPI(
@@ -26,3 +27,4 @@ app.include_router(resume_router)
 app.include_router(resume_analysis_router)
 app.include_router(interview_router)
 app.include_router(interview_questions_router)
+app.include_router(recommendations_router)
