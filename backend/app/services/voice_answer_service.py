@@ -7,9 +7,13 @@ from sqlalchemy.orm import Session
 from app.models.interview import Interview
 from app.models.interview_question import InterviewQuestion
 from app.services.voice.speech_to_text import transcribe_audio
+from app.services.ai.answer_evaluator import evaluate_answer
+from app.services.ai.adaptive_interview import analyze_answer_for_adaptation
+from app.services.adaptive_interview_service import create_adaptive_next_question
 
 
 VOICE_STORAGE_DIR = Path("storage/voice")
+MAX_INTERVIEW_QUESTIONS = 8
 
 ALLOWED_AUDIO_TYPES = {
     "audio/mpeg": ".mp3",
@@ -108,6 +112,36 @@ def save_voice_answer(
     question.transcript = transcript
     question.answer = transcript
 
+    evaluation = evaluate_answer(
+        question.question,
+        transcript
+    )
+
+    question.technical_score = evaluation["technical_score"]
+    question.communication_score = evaluation["communication_score"]
+    question.relevance_score = evaluation["relevance_score"]
+    question.overall_score = evaluation["overall_score"]
+    question.feedback = evaluation["feedback"]
+
+    adaptation = analyze_answer_for_adaptation(
+        technical_score=question.technical_score,
+        communication_score=question.communication_score,
+        relevance_score=question.relevance_score,
+        overall_score=question.overall_score
+    )
+
+    adaptive_result = None
+
+    if question_order >= MAX_INTERVIEW_QUESTIONS:
+        interview.status = "completed"
+    else:
+        adaptive_result = create_adaptive_next_question(
+            interview_id=interview_id,
+            current_question_order=question_order,
+            current_user_id=current_user_id,
+            db=db
+        )
+
     db.commit()
     db.refresh(question)
 
@@ -119,5 +153,12 @@ def save_voice_answer(
         "file_path": str(file_path),
         "content_type": audio_file.content_type,
         "transcript": question.transcript,
-        "message": "Voice answer uploaded successfully"
+        "technical_score": question.technical_score,
+        "communication_score": question.communication_score,
+        "relevance_score": question.relevance_score,
+        "overall_score": question.overall_score,
+        "feedback": question.feedback,
+        "adaptation": adaptation,
+        "next_question": adaptive_result["question"] if adaptive_result else None,
+        "message": "Voice answer evaluated successfully"
     }

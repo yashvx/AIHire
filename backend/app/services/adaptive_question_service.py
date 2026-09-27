@@ -38,7 +38,11 @@ def save_adaptive_question(
     )
 
     if existing_question:
-        return existing_question
+        if existing_question.is_adaptive:
+            return existing_question
+
+        db.delete(existing_question)
+        db.commit()
 
     adaptive_question = InterviewQuestion(
         interview_id=interview_id,
