@@ -54,6 +54,11 @@ class InterviewQuestion(Base):
         nullable=True
     )
 
+    transcript = Column(
+        Text,
+        nullable=True
+    )
+
     technical_score = Column(
         Integer,
         nullable=True

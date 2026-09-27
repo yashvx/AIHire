@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.models.interview import Interview
 from app.models.interview_question import InterviewQuestion
+from app.services.voice.speech_to_text import transcribe_audio
 
 
 VOICE_STORAGE_DIR = Path("storage/voice")
@@ -96,6 +97,20 @@ def save_voice_answer(
     with open(file_path, "wb") as buffer:
         buffer.write(audio_data)
 
+    try:
+        transcript = transcribe_audio(str(file_path))
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=str(exc)
+        )
+
+    question.transcript = transcript
+    question.answer = transcript
+
+    db.commit()
+    db.refresh(question)
+
     return {
         "interview_id": interview_id,
         "question_id": question.id,
@@ -103,5 +118,6 @@ def save_voice_answer(
         "filename": filename,
         "file_path": str(file_path),
         "content_type": audio_file.content_type,
+        "transcript": question.transcript,
         "message": "Voice answer uploaded successfully"
     }
